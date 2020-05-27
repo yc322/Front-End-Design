@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>图表展示</title>
+    <!-- 引入 echarts.js -->
+    <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+</head>
+<body>
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <div id="main" style="width: 600px;height:400px;"></div>
+    <div id="userinfo" style="width: 600px;height:400px;"></div>
+    <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+ 
+        // 指定图表的配置项和数据
+        // var option = {
+        //     title: {
+        //         text: '第一个 ECharts 实例'
+        //     },
+        //     tooltip: {},
+        //     legend: {
+        //         data:['销量']
+        //     },
+        //     source: [
+        //     // ['publish_date', 'source_name', 'count'],
+        //     // ['2020-04-26', '中新经纬', 2],
+        //     // ['2020-04-05', '雪球网', 10],
+        //     // ['2020-04-08', '澎湃新闻', 3]
+        //     ['publish_date',  'count'],
+        //     ['2020-04-26',  2],
+        //     ['2020-04-05', 10],
+        //     ['2020-04-08',  3]
+        //     ],
+        //     xAxis: [
+        //         {type: 'category'},
+        //     ],
+        //     // yAxis: [
+        //     //     {gridIndex: 1}
+        //     // ],
+        //     // grid: [
+        //     //     {bottom: '55%'},
+        //     //     {top: '55%'}
+        //     // ],
+        //     series: [
+        //         // 这几个系列会在第一个直角坐标系中，每个系列对应到 dataset 的每一行。
+        //         {type: 'bar'},
+                
+        //     ]
+        // };
+
+
+        $.get('/process_getall' , function(data) {
+            console.log(data);
+            console.log(typeof(data));
+            // var jsonObj = $.parseJSON(data);
+            // console.log(jsonObj);
+            option = {
+                legend: {},
+                tooltip: {},
+                grid:[
+                    {top:40,bottom:'58%'},
+                    {top:'58%', bottom:40}
+                ],
+                dataset: {
+                    // 提供一份数据。
+                    source:data
+                },
+                // 声明一个 X 轴，类目轴（category）。默认情况下，类目轴对应到 dataset 第一列。
+                xAxis: [{type: 'category', gridIndex:0},
+                        {type: 'category',gridIndex:1}],
+
+                // 声明一个 Y 轴，数值轴。
+                yAxis:[{type:'value', gridIndex:0},
+                    {type: 'value', gridIndex:1}],
+                // 声明多个 bar 系列，默认情况下，每个系列会自动对应到 dataset 的每一列。
+                series: [
+                    {
+                        type: 'bar',
+                        xAxisIndex :0,
+                        yAxisIndex :0,
+                        encode:{
+                            x:'publish_date',
+                            y :'num'
+                        }
+                    }, {
+                        type: 'bar',
+                        xAxisIndex :1,
+                        yAxisIndex :1,
+                        encode:{
+                            x:'source_name',
+                            y :'num'
+                        }
+                    }
+
+                ]
+            }
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+        });
+
+
+        var userChart = echarts.init(document.getElementById('userinfo'))
+
+        $.get('/process_getuserinfo' , function(data) {
+            console.log(data);
+            console.log(typeof(data));
+            // var jsonObj = $.parseJSON(data);
+            // console.log(jsonObj);
+            option = {
+                legend: {},
+                tooltip: {},
+                grid:[
+                    {top:40,bottom:'58%'},
+                ],
+                dataset: {
+                    // 提供一份数据。
+                    source:data
+                },
+                // 声明一个 X 轴，类目轴（category）。默认情况下，类目轴对应到 dataset 第一列。
+                // xAxis: {type: 'category'},
+                xAxis: {type: 'category', gridIndex:0},
+                //         {type: 'category',gridIndex:1}],
+
+                // // 声明一个 Y 轴，数值轴。
+                yAxis:{type:'value', gridIndex:0},
+                //     {type: 'value', gridIndex:1}],
+                // 声明多个 bar 系列，默认情况下，每个系列会自动对应到 dataset 的每一列。
+                series: [
+                    {
+                        type: 'bar',
+                        encode:{
+                            x:'username',
+                            y :'num'
+                        }
+                    }
+
+                ]
+            }
+    
+            // 使用刚指定的配置项和数据显示图表。
+            userChart.setOption(option);
+        });
+
+        
+    </script>
+</body>
+</html>

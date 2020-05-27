@@ -4,37 +4,117 @@ var pgsql = require('../pg.js');
 
 
 var bodyParser = require('body-parser');
-var urlencodedParser = bodyParser.urlencoded({ extended: false })
+var urlencodedParser = bodyParser.urlencoded({ extended: false });
+const cookieParser=require("cookie-parser");
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
     res.render('index', { title: 'Express' });
 });
 
+router.get('/process_getall', function(request, response) {
+    fetchSql = "select publish_date, source_name, count(*) as num from fetches  group by publish_date, source_name having count(*) > 10";
+    pgsql.query_noparam(fetchSql, function(err, result, fields) {
+        if(err) {
+            console.log(err)
+        }
+        response.writeHead(200, {
+            "Content-Type": "application/json"
+        });
+
+        console.log(result.rows);
+        response.write(JSON.stringify(result.rows));
+        response.end();
+    });
+})
+
+router.get('/process_getuserinfo', function(request, response)  {
+    fetchSql = "select  username, count(*) as num from logs group by username";
+    pgsql.query_noparam(fetchSql, function(err, result, fields) {
+        if(err) {
+            console.log(err)
+        }
+        response.writeHead(200, {
+            "Content-Type": "application/json"
+        });
+
+        console.log(result.rows);
+        response.write(JSON.stringify(result.rows));
+        response.end();
+    });
+})
+
+
 router.get('/process_get', function(request, response) {
     //sql字符串和参数
     console.log(request.query.title);
     console.log(request.query.sort);
+    var oUname = request.cookies.username;
+
+    var fetch_name_Sql = 'select passwd from UserInfo where name= $1';
+    var fetch_name_Sql_Params = [oUname];
+    pgsql.query(fetch_name_Sql, fetch_name_Sql_Params, function(err, result) {
+        // console.log(result);
+        if (err) {
+            console.log(err)
+        } else { 
+            if(result.rows.length == 0) {
+                console.log("the user not regist");
+                
+                console.log('not regist');
+                console.log(response);
+                response.writeHead(200, {
+                    "Content-Type": "application/json"
+                });
+                response.status = false;
+                response.end();
+                return ;
+            }
+        }}
+    );
+
+    console.log("*****************************");
+    var title = request.query.title;
+    var fetchSql;
     try {
-        var fetchSql = "select url,source_name,title,author,publish_date " +
-        "from fetches where title like '%" + request.query.title + "%'" +
+        var params = title.split(' ');
+        if(params.length == 3) {
+            var op = params[1];
+            console.log(op);
+            if(op.toLowerCase() == 'and') {
+                fetchSql = "select url,source_name,title,author,publish_date " +
+        "from fetches where title like '%" + params[0] + "%'" + "and title like '%" + params[2] + "%'"
         "order by " + request.query.sort;
+            } 
+            if(op.toLowerCase() == 'or') {
+                fetchSql = "select url,source_name,title,author,publish_date " +
+        "from fetches where title like '%" + params[0] + "%'" + "or title like '%" + params[2] + "%'"
+        "order by " + request.query.sort;
+            }
+        } else {
+            fetchSql = "select url,source_name,title,author,publish_date " +
+        "from fetches where title like '%" + request.query.title + "%'" +
+        " order by " + request.query.sort;
+        }
+        console.log(fetchSql);
         pgsql.query_noparam(fetchSql, function(err, result, fields) {
             if(err) {
                 console.log(err)
             }
 
             var fetchInsertSql = 'INSERT INTO Logs (username, operation)' + 'VALUES ($1, $2)';
-            var fetchInsertSql_Params = [oUname, 'query: ' + request.query.title + "sort by " + request.query.sort];
+            var fetchInsertSql_Params = [oUname, 'query: ' + request.query.title + " order by " + request.query.sort];
             pgsql.query(fetchInsertSql, fetchInsertSql_Params, function(err,result) {
                 if(err) {
                     console.log(err);
                 }
             })
-            
+
             response.writeHead(200, {
                 "Content-Type": "application/json"
             });
             console.log(result.rows);
+            response.status = true;
             response.write(JSON.stringify(result.rows));
             response.end();
         });
@@ -74,6 +154,8 @@ router.post('/process_login', urlencodedParser, function (req, res) {
                     }
                 })
                 response.status = 'login success';
+                // Cookie cookie = new Cookie"user", oUname);
+                res.cookie("username", oUname);
                 console.log(response);
                 res.end(JSON.stringify(response));
                 return ;

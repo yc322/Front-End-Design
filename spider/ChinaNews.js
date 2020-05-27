@@ -137,7 +137,7 @@ function newsGet(myURL) { //读取新闻页面
         console.log("get the source");
         if (source_format == "") fetch.source = fetch.source_name;
         else fetch.source = eval(source_format).split('：')[1]; //来源
-        fetch.source = fetch.source.replace('参与互动', '');
+        fetch.source = source_name;
         console.log(fetch.source);
         
         var filename = source_name + "_" + (new Date()).toFormat("YYYY-MM-DD") +

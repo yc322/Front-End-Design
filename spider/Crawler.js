@@ -134,7 +134,7 @@ function newsGet(myURL) { //读取新闻页面
         //console.log(fetch.content);
 
         if (source_format == "") fetch.source = fetch.source_name;
-        else fetch.source = $('.source.data-source').text().replace('来源：', "").replace(/\s+/g, "").replace(/<\/?.+?>/g,"").replace(/[\r\n]/g, ""); //来源
+        else fetch.source = source_name;
         console.log(fetch.source);
         fetch.read_num = $('.num.ml5').text();
         
