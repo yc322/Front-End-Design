@@ -5,25 +5,29 @@
     <title>欢迎你，请先登陆！</title>
     <script type="text/javascript" src="./script/login.js"></script>
     <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
-
+    <link rel="stylesheet" href="./stylesheets/regist.css">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<div id="container" style="width: 400px" align="center">
-    <div id="header" >
-        <h2 align="center">注册</h2>
-    </div>
-        <div id="content">
+
+
+    <div class="box">
+        <h2>注册</h2>
+        <div class="input_box">
             <p align="center">账号:
                 <input id="uname" type="text" name="user" placeholder="账号首字符为字母">
             </p>
             <p align="center">密码:
                 <input id="upass" type="password" name="psw" placeholder="请输入密码">
             </p>
-        <div id="error_box"><br></div>
-            <br>
-            <button onclick="Regist()" class="btn-info">注册</button>
         </div>
+        <div id="error_box"><br></div>
+            <div class="input_box">
+                <br>
+                <button onclick="Regist()" class="btn btn-primary">注册</button>
+            </div>
+        </div>
+
 
     <script>
         // $(document).ready(function() {
@@ -36,6 +40,5 @@
         //     })
         // })
     </script>
-</div>  
 </body>
 </html>
