@@ -5,70 +5,12 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
     <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.css">
-  
+    <link rel="stylesheet" href="./stylesheets/search.css">
 </header>
 
-<style type="text/css">
-    table
-    {
-        border-collapse: collapse;
-        text-align: center;
-        table-layout: fixed;
-        word-break : break-all;
-    }
-    table td, table th
-    {
-        border: 1px solid #cad9ea;
-        color: #666;
-        height: 30px;
-    }
-    table thead th
-    {
-        background-color: #CCE8EB;
-    }
-    table tr
-    {
-        background: #fff;
-    }
-    .title{
-        background: #F5FAFA;
-    }
-</style>
 
 <body>
     <form>
-        <style>
-            .select {
-              display: inline;
-            }
-            .container {
-                display: inline;
-            }
-            .search {
-                width:550px; /* 这里是输入框的长度 */ 
-                height:40px; /* 这里是输入框的宽度 */ 
-            }
-
-            /*提交按钮*/
-            .form-submit {
-                background-color: rgb(0, 75, 214);
-                border-radius:5px;
-                color: #fff;
-                font-size: 20px;
-                border: none;
-            }
-            .parent {
-                border:1px solid rgb(199, 193, 193);
-                background: #ffffff;
-            }
-            /*标题*/
-            .title {
-                border:1px solid rgb(199, 193, 193);
-                font-family : 'FangSong';
-                font-size : x-large;
-            }
-            
-        </style>
         <div class = "title">
             新闻查询
         </div>
@@ -89,9 +31,7 @@
             </div>
             <br>
             <br>
-            
         </div>
-
     </form>
 
     
@@ -101,6 +41,14 @@
     </div>
     <script>
         $(document).ready(function() {
+            $.get('/check', function(data) {
+                console.log(data);
+                if(data == false) {
+                    window.alert("用户未登录");
+                    window.location.href = "login.html";
+                }
+            });
+
             $("input:button").click(function() {
                 var title = $("input:text").val();
                 var sort = $('#sortid').val();

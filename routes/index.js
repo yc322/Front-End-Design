@@ -44,34 +44,51 @@ router.get('/process_getuserinfo', function(request, response)  {
     });
 })
 
+router.get('/check', function(request, response) {
+    var oUname = request.cookies.username;
+    if(typeof(oUname) != undefined) {
+        console.log(oUname);
+        var fetch_name_Sql = 'select * from UserInfo where name= $1';
+        var fetch_name_Sql_Params = [oUname];
+        pgsql.query(fetch_name_Sql, fetch_name_Sql_Params, function(err, result) {
+            // console.log(result);
+            if (err) {
+                // console.log(err)
+                console.log(err);
+            } else { 
+                if(result.rows.length == 0) {
+                    console.log("the user not login");                    
+                    response.writeHead(200, {
+                        "Content-Type": "application/json"
+                    });
+                    response.write('false');
+                    response.end();
+                    return ;
+                }
+                response.writeHead(200, {
+                    "Content-Type": "application/json"
+                });
+                response.write('true');
+                response.end();
+                return ;
+            }
+        });
+    } else {
+        response.writeHead(200, {
+            "Content-Type": "application/json"
+        });
+        response.write('false');
+        // console.log(response);
+        response.end();
+        return ;
+    }
+});
+
 
 router.get('/process_get', function(request, response) {
     //sql字符串和参数
     console.log(request.query.title);
     console.log(request.query.sort);
-    var oUname = request.cookies.username;
-
-    var fetch_name_Sql = 'select passwd from UserInfo where name= $1';
-    var fetch_name_Sql_Params = [oUname];
-    pgsql.query(fetch_name_Sql, fetch_name_Sql_Params, function(err, result) {
-        // console.log(result);
-        if (err) {
-            console.log(err)
-        } else { 
-            if(result.rows.length == 0) {
-                console.log("the user not regist");
-                
-                console.log('not regist');
-                console.log(response);
-                response.writeHead(200, {
-                    "Content-Type": "application/json"
-                });
-                response.status = false;
-                response.end();
-                return ;
-            }
-        }}
-    );
 
     console.log("*****************************");
     var title = request.query.title;
