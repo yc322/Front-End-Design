@@ -89,7 +89,8 @@ router.get('/process_get', function(request, response) {
     //sql字符串和参数
     console.log(request.query.title);
     console.log(request.query.sort);
-
+    var oUname = request.cookies.username;
+    if(typeof(oUname) != undefined) {
     console.log("*****************************");
     var title = request.query.title;
     var fetchSql;
