@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<header>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.css">
+    <link rel="stylesheet" href="./stylesheets/search.css">
+</header>
+
+
+<body>
+    <form>
+        <div class = "title">
+            新闻关键词查询
+        </div>
+        <div class = "parent">
+            <br>
+            <div class="container" style ="float: left; width: 100%;">
+                <form action="" class="parent">
+                    <input type="text" class="search" name="title_text" placeholder="请输入查询关键字" style="border-radius: 8px; ">
+                    <input type="button" class="form-submit" style = "float:right" value="查询">
+                </form>
+            </div>
+            <br>
+            <br>
+        </div>
+    </form>
+
+    
+
+    <div class="cardLayout" style="margin: 10px 0px">
+        <table width="100%" border="1" id="record2"></table>
+    </div>
+    <script>
+        $(document).ready(function() {
+            $.get('/check', function(data) {
+                console.log(data);
+                if(data == false) {
+                    window.alert("用户未登录");
+                    window.location.href = "login.html";
+                }
+            });
+
+            $("input:button").click(function() {
+                var title = $("input:text").val();
+                var sort = $('#sortid').val();
+                console.log("title = " + title);
+                console.log("sort = " + sort);
+                var params = '/process_getbyKeywords?title=' + $("input:text").val() ;
+
+                $(function(){
+                    console.log(params);
+                    $("#record2").empty();
+                    $('#record2').bootstrapTable({
+                        url:params,
+                        method:'GET',
+                        pagination:true,
+                        sidePagination:'client',
+                        pageSize:5,
+                        striped : true,
+                        sortable : true,
+                        sortOrder:"asc",
+                        showRefresh:true,
+                        search:true,
+                        showToggle: true,
+                        toolbar: '#toolbar',
+                        showColumns : true,
+                        columns:[{
+                            field :'url',
+                            title : 'url',
+                            sortable : true
+                        }, {
+                            field:'title',
+                            title:'title'
+                        }, {
+                            field:'source_name',
+                            title:'source_name',
+                            sortable : true
+                        },{
+                            field:'author',
+                            title:'author'
+                        },{
+                            field:'publish_date',
+                            title:'publish_date',
+                            sortable : true
+
+                        }]
+                    })
+                });
+                // $.get(params, function(data) {
+                //     $("#record2").empty();
+                //     $('#record2').bootstrapTable({
+                //         url:params,
+                //         method:'GET',
+                //         pagination:true,
+                //         sidePagination:'client',
+                //         pageSize:5,
+                //         showRefresh:true,
+                //         columns:[{
+                //             field :'URl',
+                //             title : 'url'
+                //         }, {
+                //             field:'Title',
+                //             title:'title'
+                //         }, {
+                //             field:'Source',
+                //             title:'source_name'
+                //         },{
+                //             field:'Author',
+                //             title:'author'
+                //         },{
+                //             field:'Date',
+                //             title:'publish_date'
+                //         }]
+                //     })
+                    // $("#record2").append('<tr class="cardLayout"><td>url</td><td>source_name</td>' +
+                    //    '<td>title</td><td>author</td><td>publish_date</td></tr>');
+                    // for (let list of data) {
+                    //     let table = '<tr class="cardLayout"><td>';
+                    //     Object.values(list).forEach(element => {
+                    //         table += (element + '</td><td>');
+                    //     });
+                    //     table = table.substring(0, table.length - 4);
+                    //     $("#record2").append(table + '</tr>');
+                    // }
+                // });
+            });
+
+        });
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.js"></script>
+
+</body>
+</html>

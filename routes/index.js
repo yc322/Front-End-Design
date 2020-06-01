@@ -85,59 +85,103 @@ router.get('/check', function(request, response) {
 });
 
 
+
+router.get('/process_getbyKeywords', function(request, response) {
+    //sql字符串和参数
+    console.log(request.query.title);
+    console.log(request.query.sort);
+    var oUname = request.cookies.username;
+    if(typeof(oUname) != undefined) {
+        console.log("*****************************");
+        var title = request.query.title;
+        var fetchSql;
+        try {
+            fetchSql = "select url,source_name,title,author,publish_date " +
+            "from fetches where id_fetches in (select id_fetches from splitwords where word = '"+request.query.title + "')";
+            console.log(fetchSql);
+            pgsql.query_noparam(fetchSql,function(err, result, fields) {
+                if(err) {
+                    console.log(err)
+                }
+
+                var fetchInsertSql = 'INSERT INTO Logs (username, operation)' + 'VALUES ($1, $2)';
+                var fetchInsertSql_Params = [oUname, 'keyword query: ' + request.query.title + " order by " + request.query.sort];
+                pgsql.query(fetchInsertSql, fetchInsertSql_Params, function(err,result) {
+                    if(err) {
+                        console.log(err);
+                    }
+                })
+
+                response.writeHead(200, {
+                    "Content-Type": "application/json"
+                });
+                console.log(result.rows);
+                response.status = true;
+                response.write(JSON.stringify(result.rows));
+                response.end();
+            });
+        }catch(e) {
+            console.log(e);
+        }
+    }
+});
+
+
+
 router.get('/process_get', function(request, response) {
     //sql字符串和参数
     console.log(request.query.title);
     console.log(request.query.sort);
     var oUname = request.cookies.username;
     if(typeof(oUname) != undefined) {
-    console.log("*****************************");
-    var title = request.query.title;
-    var fetchSql;
-    try {
-        var params = title.split(' ');
-        if(params.length == 3) {
-            var op = params[1];
-            console.log(op);
-            if(op.toLowerCase() == 'and') {
-                fetchSql = "select url,source_name,title,author,publish_date " +
-        "from fetches where title like '%" + params[0] + "%'" + "and title like '%" + params[2] + "%'"
-        "order by " + request.query.sort;
-            } 
-            if(op.toLowerCase() == 'or') {
-                fetchSql = "select url,source_name,title,author,publish_date " +
-        "from fetches where title like '%" + params[0] + "%'" + "or title like '%" + params[2] + "%'"
-        "order by " + request.query.sort;
-            }
-        } else {
-            fetchSql = "select url,source_name,title,author,publish_date " +
-        "from fetches where title like '%" + request.query.title + "%'" +
-        " order by " + request.query.sort;
-        }
-        console.log(fetchSql);
-        pgsql.query_noparam(fetchSql, function(err, result, fields) {
-            if(err) {
-                console.log(err)
-            }
-
-            var fetchInsertSql = 'INSERT INTO Logs (username, operation)' + 'VALUES ($1, $2)';
-            var fetchInsertSql_Params = [oUname, 'query: ' + request.query.title + " order by " + request.query.sort];
-            pgsql.query(fetchInsertSql, fetchInsertSql_Params, function(err,result) {
-                if(err) {
-                    console.log(err);
+        console.log("*****************************");
+        var title = request.query.title;
+        var fetchSql;
+        try {
+            var params = title.split(' ');
+            if(params.length == 3) {
+                var op = params[1];
+                console.log(op);
+                if(op.toLowerCase() == 'and') {
+                    fetchSql = "select url,source_name,title,author,publish_date " +
+            "from fetches where title like '%" + params[0] + "%'" + "and title like '%" + params[2] + "%'"
+            "order by " + request.query.sort;
+                } 
+                if(op.toLowerCase() == 'or') {
+                    fetchSql = "select url,source_name,title,author,publish_date " +
+            "from fetches where title like '%" + params[0] + "%'" + "or title like '%" + params[2] + "%'"
+            "order by " + request.query.sort;
                 }
-            })
+            } else {
+                fetchSql = "select url,source_name,title,author,publish_date " +
+            "from fetches where title like '%" + request.query.title + "%'" +
+            " order by " + request.query.sort;
+            }
+            console.log(fetchSql);
+            pgsql.query_noparam(fetchSql, function(err, result, fields) {
+                if(err) {
+                    console.log(err)
+                }
 
-            response.writeHead(200, {
-                "Content-Type": "application/json"
+                var fetchInsertSql = 'INSERT INTO Logs (username, operation)' + 'VALUES ($1, $2)';
+                var fetchInsertSql_Params = [oUname, 'query: ' + request.query.title + " order by " + request.query.sort];
+                pgsql.query(fetchInsertSql, fetchInsertSql_Params, function(err,result) {
+                    if(err) {
+                        console.log(err);
+                    }
+                })
+
+                response.writeHead(200, {
+                    "Content-Type": "application/json"
+                });
+                console.log(result.rows);
+                response.status = true;
+                response.write(JSON.stringify(result.rows));
+                response.end();
             });
-            console.log(result.rows);
-            response.status = true;
-            response.write(JSON.stringify(result.rows));
-            response.end();
-        });
-    }catch(e) {
-        console.log(e);
+        }catch(e) {
+            console.log(e);
+        }
     }
 });
 
@@ -187,6 +231,7 @@ router.post('/process_login', urlencodedParser, function (req, res) {
         }}
     )
 })
+
 
 
 router.post('/process_regist', urlencodedParser, function (req, res) {
