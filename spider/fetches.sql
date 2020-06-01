@@ -12,3 +12,9 @@ CREATE TABLE fetches (
    read_num integer DEFAULT NULL,
   PRIMARY KEY (id_fetches)
 );
+
+CREATE TABLE Splitwords (
+   id_word serial UNIQUE,
+   id_fetches int,
+   word varchar(50) DEFAULT NULL,
+);

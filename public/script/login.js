@@ -48,8 +48,7 @@ function Regist() {
     var isError = true;
     console.log(oUname.value);
 
-
-    if (oUpass.value.length > 20 || oUpass.value.length < 6) {
+    if (oUpass.value.length > 10 || oUpass.value.length < 3) {
         oError.innerHTML = "密码请输入6-20位字符"
         isError = false;
         return;
