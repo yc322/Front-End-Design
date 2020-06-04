@@ -18,3 +18,9 @@ CREATE TABLE Splitwords (
    id_fetches int,
    word varchar(50) DEFAULT NULL,
 );
+
+CREATE TABLE WordWeight (
+   id_fetches int,
+   word varchar(50) DEFAULT NULL,
+   weight integer
+);

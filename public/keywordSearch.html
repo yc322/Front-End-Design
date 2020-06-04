@@ -34,13 +34,13 @@
     </div>
     <script>
         $(document).ready(function() {
-            $.get('/check', function(data) {
-                console.log(data);
-                if(data == false) {
-                    window.alert("用户未登录");
-                    window.location.href = "login.html";
-                }
-            });
+            // $.get('/check', function(data) {
+            //     console.log(data);
+            //     if(data == false) {
+            //         window.alert("用户未登录");
+            //         window.location.href = "login.html";
+            //     }
+            // });
 
             $("input:button").click(function() {
                 var title = $("input:text").val();

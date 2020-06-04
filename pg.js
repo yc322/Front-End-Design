@@ -4,7 +4,7 @@ var pg = require('pg');
 var config = {  
     user:"postgres",
     database:"Spider",
-    password:"postgres",
+    password:"000",
     port:5432,
     // 扩展属性
     max:20, // 连接池最大连接数

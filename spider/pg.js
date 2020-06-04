@@ -4,7 +4,7 @@ var pg = require('pg');
 var config = {  
     user:"postgres",
     database:"Spider",
-    password:"postgres",
+    password:"000",
     port:5432,
     // 扩展属性
     max:20, // 连接池最大连接数
@@ -50,6 +50,7 @@ var query_noparam = function(sql, callback) {
             callback(err, null, null);
         } else {
             conn.query(sql, function(err, result) {
+                // console.log(result);
                 conn.release(); //释放连接 
                 callback(err, result); //事件驱动回调 
             });

@@ -97,7 +97,7 @@ router.get('/process_getbyKeywords', function(request, response) {
         var fetchSql;
         try {
             fetchSql = "select url,source_name,title,author,publish_date " +
-            "from fetches where id_fetches in (select id_fetches from splitwords where word = '"+request.query.title + "')";
+            "from fetches, wordweight where wordweight.id_fetches = fetches.id_fetches and word = " +'\'' + title + '\'  order by weight desc';
             console.log(fetchSql);
             pgsql.query_noparam(fetchSql,function(err, result, fields) {
                 if(err) {
